@@ -43,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         subtitle: Text(task.description),
                         trailing: IconButton(
                           icon: const Icon(Icons.delete),
-                          color: Colors.red,
+                          color: Colors.lightBlueAccent,
                           onPressed: () {
                             _removeTask(index);
                           },
