@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -9,9 +8,9 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
+
 class _MyHomePageState extends State<MyHomePage> {
   final List<Task> _tasks = [];
-  
 
   @override
   Widget build(BuildContext context) {
@@ -20,86 +19,76 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-                itemCount: _tasks.length,
-                itemBuilder: (context, index) {
-                  final task = _tasks[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Card(
-                      elevation: 4.0,
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(8.0),
-                        title: Text(task.title),
-                        subtitle: Text(task.description),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete),
-                          color: Colors.lightBlueAccent,
-                          onPressed: () {
-                            _removeTask(index);
-                          },
-                        ),
-                        onTap: () => showEditDialog(context),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: _buildBody(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showEditDialog(context),
+        onPressed: () => _showEditDialog(context),
         tooltip: 'Add Task',
         child: const Icon(Icons.add),
       ),
     );
   }
-  void showEditDialog(BuildContext context) {
+
+  Widget _buildBody() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const SizedBox(height: 10),
+          Expanded(child: _buildTaskList()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTaskList() {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      itemCount: _tasks.length,
+      itemBuilder: (context, index) {
+        return _buildTaskItem(index);
+      },
+    );
+  }
+
+  Widget _buildTaskItem(int index) {
+    final task = _tasks[index];
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Card(
+        elevation: 4.0,
+        child: ListTile(
+          contentPadding: const EdgeInsets.all(8.0),
+          title: Text(task.title),
+          subtitle: Text(task.description),
+          trailing: IconButton(
+            icon: const Icon(Icons.delete, color: Colors.lightBlueAccent),
+            onPressed: () => _removeTask(index),
+          ),
+          onTap: () => _showEditDialog(context),
+        ),
+      ),
+    );
+  }
+
+  void _showEditDialog(BuildContext context) {
     String title = '';
     String description = '';
 
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: const Text('Add Task'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Title',
-                ),
-                onChanged: (value) {
-                  title = value;
-                },
-              ),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Description',
-                ),
-                onChanged: (value) {
-                  description = value;
-                },
-              ),
+              _buildTextField('Title', (value) => title = value),
+              _buildTextField('Description', (value) => description = value),
             ],
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('Cancel'),
             ),
             TextButton(
@@ -116,7 +105,14 @@ class _MyHomePageState extends State<MyHomePage> {
       },
     );
   }
-  
+
+  Widget _buildTextField(String label, Function(String) onChanged) {
+    return TextField(
+      decoration: InputDecoration(labelText: label),
+      onChanged: onChanged,
+    );
+  }
+
   void _addTask(Task task) {
     setState(() {
       _tasks.add(task);
@@ -130,12 +126,11 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     });
   }
-
 }
 
 class Task {
-  String title;
-  String description;
+  final String title;
+  final String description;
 
   Task({required this.title, required this.description});
 }
