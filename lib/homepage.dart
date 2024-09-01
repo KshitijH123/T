@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
           title: Text(task.title),
           subtitle: Text(task.description),
           trailing: IconButton(
-            icon: const Icon(Icons.delete, color: Colors.redAccent),
+            icon: const Icon(Icons.delete, color: Colors.blueGrey),
             onPressed: () => _removeTask(index),
           ),
           onTap: () => _showEditDialog(context),
@@ -78,18 +78,18 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add Task'),
+          title: const Text('Add Task',style:TextStyle(color: Colors.lightBlue)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildTextField('Title', (value) => title = value),
+              _buildTextField('Title',(value) => title = value),
               _buildTextField('Description', (value) => description = value),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: const Text('Cancel',style: TextStyle(color: Colors.indigo),),
             ),
             TextButton(
               onPressed: () {
@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 }
                 Navigator.of(context).pop();
               },
-              child: const Text('Save'),
+              child: const Text('Save',style: TextStyle(color: Colors.orangeAccent),),
             ),
           ],
         );
